@@ -4,8 +4,8 @@ import { Header } from "@/components/Header";
 
 export const metadata: Metadata = {
   title: "Revenda Avenida",
-  description: "Revenda de veiculos em Pelotas RS",
-  keywords: ["revenda", "veiculos", "pelotas"],
+  description: "Revenda de carros usados em Pelotas - RS",
+  keywords: ['revenda', 'carros', 'veículos', 'carros usados']
 };
 
 export default function RootLayout({

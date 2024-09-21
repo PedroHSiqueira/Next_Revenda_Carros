@@ -1,5 +1,8 @@
 import { PrismaClient } from "@prisma/client"
 import { Router } from "express"
+import multer from 'multer'
+
+const upload = multer({ storage: multer.memoryStorage() })
 
 // const prisma = new PrismaClient()
 const prisma = new PrismaClient({
@@ -31,28 +34,36 @@ prisma.$on('query', (e) => {
 
 const router = Router()
 
-router.get("/", async (req, res) => {
+router.get("/:carroId", async (req, res) => {
+  const { carroId } = req.params
+
   try {
-    const marcas = await prisma.marca.findMany()
-    res.status(200).json(marcas)
+    const fotos = await prisma.foto.findMany({
+      where: { carroId: Number(carroId) }
+    })
+    res.status(200).json(fotos)
   } catch (error) {
     res.status(400).json(error)
   }
 })
 
-router.post("/", async (req, res) => {
-  const { nome } = req.body
+router.post("/", upload.single('codigoFoto'), async (req, res) => {
+  const { descricao, carroId } = req.body
+  const codigo = req.file?.buffer.toString("base64")
 
-  if (!nome) {
-    res.status(400).json({ "erro": "Informe o nome da marca" })
+  if (!descricao || !carroId || !codigo) {
+    res.status(400).json({ "erro": "Informe descricao, carroId e codigoFoto" })
     return
   }
 
   try {
-    const marca = await prisma.marca.create({
-      data: { nome }
+    const foto = await prisma.foto.create({
+      data: {
+        descricao, carroId: Number(carroId),
+        codigoFoto: codigo as string
+      }
     })
-    res.status(201).json(marca)
+    res.status(201).json(foto)
   } catch (error) {
     res.status(400).json(error)
   }

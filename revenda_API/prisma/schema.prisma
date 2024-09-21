@@ -14,35 +14,54 @@ datasource db {
 }
 
 model Marca {
-  id     Int     @id @default(autoincrement())
-  nome   String  @db.VarChar(30)
-  carros Carro[]
-
+  id        Int      @id @default(autoincrement())
+  nome      String   @db.VarChar(30)
+  carros    Carro[]
   @@map("marcas")
 }
 
-model Carro {
-  id         Int     @id @default(autoincrement())
-  modelo     String  @db.VarChar(60)
-  ano        Int     @db.SmallInt
-  km         Int
-  preco      Decimal @db.Decimal(10, 2)
-  foto       String
-  acessorios String?
-  destacado  Boolean @default(true)
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
-  combustivel Combustiveis @default(FLEX)
-  marca      Marca   @relation(fields: [marcaId], references: [id])
-  marcaId    Int
+model Cliente {
+  id           String   @id @db.VarChar(36) @default(uuid())
+  nome         String   @db.VarChar(60)
+  email        String   @db.VarChar(60) @unique
+  senha        String   @db.VarChar(60)   // senha deve ser varchar(60)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt  
+  @@map("usuarios")
+}
 
+model Carro {
+  id          Int      @id @default(autoincrement())
+  modelo      String   @db.VarChar(60)
+  ano         Int      @db.SmallInt
+  preco       Decimal  @db.Decimal(10, 2)
+  km          Int      @db.MediumInt
+  destaque    Boolean  @default(true)
+  foto        String   
+  acessorios  String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  combustivel Combustiveis @default(FLEX)
+  marca       Marca    @relation(fields: [marcaId], references: [id])
+  marcaId     Int
+  fotos       Foto[]
   @@map("carros")
 }
 
+model Foto {
+  id          Int      @id @default(autoincrement())
+  descricao   String   @db.VarChar(30)
+  codigoFoto  String   @db.LongText
+  carro       Carro    @relation(fields: [carroId], references: [id])
+  carroId     Int
+  @@map("fotos")
+}
+
 enum Combustiveis {
+  FLEX
   GASOLINA
   ALCOOL
   DIESEL
-  FLEX
-  ELETRICO
+  ELETRICIDADE
 }
+

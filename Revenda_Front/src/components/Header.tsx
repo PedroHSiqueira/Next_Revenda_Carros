@@ -1,9 +1,20 @@
 "use client";
 import Link from "next/link";
 import { useClienteStore } from "@/context/cliente";
+import { useRouter } from "next/navigation";
 
 export function Header() {
-  const { cliente } = useClienteStore();
+  const { cliente, deslogaCliente } = useClienteStore();
+  const router = useRouter();
+
+  function sairCliente() {
+    deslogaCliente();
+    if(localStorage.getItem("client_key")) {
+      localStorage.removeItem("client_key");
+    }
+    router.push("/login");
+  }
+
   return (
     <nav className="bg-orange-600 border-gray-200 ">
       <div className="flex flex-wrap justify-between items-center mx-auto max-w-screen-xl p-4">
@@ -18,9 +29,9 @@ export function Header() {
           <span className="text-gray-500 dark:text-white hover:underline">
             Cliente: {cliente.nome}
           </span>
-          <Link href="/login" className="font-bold text-blue-600 dark:text-blue-500 hover:underline">
+          <span className=" cursor-pointer font-bold text-blue-600 dark:text-blue-500 hover:underline" onClick={sairCliente}>
             Sair
-          </Link>
+          </span>
           </> :  <>
           <span className="text-gray-500 dark:text-white hover:underline">
             (identifique-se)

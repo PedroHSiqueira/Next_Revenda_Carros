@@ -61,8 +61,8 @@ async function enviaEmail(
     port: 587,
     secure: false,
     auth: {
-      user: "7d42fb001@smtp-brevo.com",
-      pass: "pUkGQWbg5LCMyBFD",
+      user: "meu username",
+      pass: "minha senha",
     },
   });
 
